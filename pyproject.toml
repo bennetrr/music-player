@@ -1,21 +1,23 @@
 [project]
 name = "music-player"
-version = "0.1.0"
+version = "0.0.1"
 description = "Add your description here"
 readme = "README.md"
 authors = [
     { name = "Bennet Ranft", email = "bennet@ranft.ing" },
 ]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "pydantic>=2.11.5",
+]
 
 [dependency-groups]
 dev = [
     "assertpy>=1.1",
-    "mypy>=1.15.0",
+    "mypy>=1.16.0",
     "pytest>=8.3.5",
-    "ruff>=0.11.2",
-    "types-assertpy>=1.1.0.20240712",
+    "ruff>=0.11.12",
+    "types-assertpy>=1.1.0.20250502",
 ]
 
 [project.gui-scripts]
