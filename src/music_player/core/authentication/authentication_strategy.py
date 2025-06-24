@@ -1,8 +1,9 @@
 __all__ = ['AuthenticationStrategy']
 
 from abc import ABC
+from datetime import datetime
 
-from pydantic import BaseModel, FutureDatetime
+from pydantic import BaseModel
 
 
 class AuthenticationStrategy(BaseModel, ABC):
@@ -14,4 +15,4 @@ class AuthenticationStrategy(BaseModel, ABC):
     :var expires: The time when the authentication gets invalidated.
     """
 
-    expires: FutureDatetime
+    expires: datetime

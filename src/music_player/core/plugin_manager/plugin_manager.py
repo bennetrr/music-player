@@ -1,14 +1,14 @@
 __all__ = ['load_plugins', 'plugin_manager']
 
-import logging
 from collections.abc import Iterator
 from importlib import import_module
+from logging import getLogger
 from pkgutil import ModuleInfo, iter_modules
 from typing import Any
 
 import music_player.plugin
 
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
 
 
 def _iter_namespace(namespace_pkg: Any) -> Iterator[ModuleInfo]:  # noqa: ANN401
