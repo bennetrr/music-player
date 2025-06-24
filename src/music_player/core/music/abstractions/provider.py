@@ -3,8 +3,7 @@ __all__ = ['Provider']
 from abc import ABC, abstractmethod
 
 from music_player.core.authentication import AuthenticationResult
-from music_player.core.music.models import Track, TrackContainer, TrackMetadata
-from music_player.core.music.models.search_result import SearchResult
+from music_player.core.music import SearchResult, Track, TrackContainer, TrackMetadata
 
 
 class Provider(ABC):
@@ -27,8 +26,8 @@ class Provider(ABC):
     def cleanup(self) -> None:
         """Clean up resources."""
 
-    @abstractmethod
     @property
+    @abstractmethod
     def id(self) -> str:
         """A unique ID of the music provider instance."""
 

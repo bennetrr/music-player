@@ -4,7 +4,7 @@ from enum import StrEnum
 
 
 class TrackType(StrEnum):
-    """Type of a track."""
+    """The type of track."""
 
     SONG = 'song'
     PODCAST = 'podcast'

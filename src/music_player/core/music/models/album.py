@@ -2,7 +2,7 @@ __all__ = ['Album']
 
 from pydantic import AnyUrl
 
-from music_player.core.music.models import TrackContainer
+from music_player.core.music import TrackContainer
 
 
 class Album(TrackContainer):

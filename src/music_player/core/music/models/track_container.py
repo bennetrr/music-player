@@ -4,7 +4,7 @@ from abc import ABC
 
 from pydantic import BaseModel, field_serializer, field_validator
 
-from music_player.core.music.abstractions import Provider
+from music_player.core.music import Provider
 
 
 class TrackContainer(BaseModel, ABC):

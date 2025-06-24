@@ -2,8 +2,7 @@ __all__ = ['Player']
 
 from abc import ABC, abstractmethod
 
-from music_player.core.music.enums import PlaybackStatus, RepeatMode
-from music_player.core.music.models import Track, TrackMetadata
+from music_player.core.music import PlaybackStatus, RepeatMode, Track, TrackMetadata
 from music_player.core.utils import EventManager
 
 

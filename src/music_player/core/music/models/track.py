@@ -2,8 +2,7 @@ __all__ = ['Track']
 
 from pydantic import BaseModel, field_serializer, field_validator
 
-from music_player.core.music.abstractions import Provider
-from music_player.core.music.enums import TrackType
+from music_player.core.music import Provider, TrackType
 
 
 class Track(BaseModel):
