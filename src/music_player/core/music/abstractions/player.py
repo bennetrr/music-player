@@ -18,13 +18,13 @@ class Player(ABC):
     """
 
     _playback_status_change_event: EventManager[PlaybackStatus]
-    _playback_error_event: EventManager[str]
+    _playback_error_event: EventManager[Exception]
     _track_change_event: EventManager[TrackMetadata]
     _position_change_event: EventManager[float]
     _volume_change_event: EventManager[float]
 
     def __init__(self) -> None:
-        """Initialize the music player."""
+        """Initialize the player."""
         self._playback_status_change_event = EventManager()
         self._playback_error_event = EventManager()
         self._track_change_event = EventManager()
@@ -267,7 +267,7 @@ class Player(ABC):
         return self._playback_status_change_event
 
     @property
-    def playback_error_event(self) -> EventManager[str]:
+    def playback_error_event(self) -> EventManager[Exception]:
         """Invoked when an error occurs during playback."""
         return self._playback_error_event
 

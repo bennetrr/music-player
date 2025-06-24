@@ -7,5 +7,5 @@ class VolumeOutOfBoundsError(ValueError):
     def __init__(self, value: float) -> None:
         """Initialize the error."""
         super().__init__(
-            f'The specified volume is out of bounds(expected a value between 0 % and 100 %, got {value} %).'
+            f'The specified volume is out of bounds (expected a value between 0 % and 100 %, got {value} %).'
         )

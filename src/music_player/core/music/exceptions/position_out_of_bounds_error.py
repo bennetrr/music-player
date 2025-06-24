@@ -8,5 +8,5 @@ class PositionOutOfBoundsError(ValueError):
         """Initialize the error."""
         super().__init__(
             f'The specified playback position is out of bounds for the current track'
-            f'(expected a value between 0 s and {max_value} s, got {value} s).'
+            f' (expected a value between 0 s and {max_value} s, got {value} s).'
         )
