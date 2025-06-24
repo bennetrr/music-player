@@ -21,13 +21,11 @@ class Provider(ABC):
 
     _context: PluginContext
 
-    @abstractmethod
     def __init__(self, context: PluginContext) -> None:
         """Initialize the provider."""
         self._context = context
 
-    @abstractmethod
-    def cleanup(self) -> None:
+    def close(self) -> None:  # noqa: B027
         """Clean up resources."""
 
     @property

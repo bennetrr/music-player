@@ -46,6 +46,7 @@ ignore = [
     "D104",   # Missing docstring in a public package
     "D203",   # Would put a blank line before class docstrings
     "D212",   # Would put the summary on the same line as the docstring qoutes
+    "D401",   # The first line of docstring should be in an imperative mood
     "COM812", # Conflicts with formatter
     "FIX002", # Prevents TODO comments
     "TD002",  # Prevents authorless TODO comments

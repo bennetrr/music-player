@@ -35,8 +35,7 @@ class Player(ABC):
         self._position_change_event = EventManager()
         self._volume_change_event = EventManager()
 
-    @abstractmethod
-    def close(self) -> None:
+    def close(self) -> None:  # noqa: B027
         """Clean up resources."""
 
     # region Playback Control
