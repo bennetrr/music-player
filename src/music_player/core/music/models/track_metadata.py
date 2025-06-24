@@ -1,6 +1,6 @@
 __all__ = ['TrackMetadata']
 
-from pydantic import BaseModel
+from pydantic import AnyUrl, BaseModel
 
 
 class TrackMetadata(BaseModel):
@@ -16,6 +16,8 @@ class TrackMetadata(BaseModel):
 
     title: str
     artist: str
+    artist_id: str
     album: str | None
-    cover_uri: str | None
+    album_id: str | None
+    cover_uri: AnyUrl | None
     duration: int | None
