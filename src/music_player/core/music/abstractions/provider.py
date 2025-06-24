@@ -1,9 +1,9 @@
-__all__ = ['MusicProvider']
+__all__ = ['Provider']
 
 from abc import ABC, abstractmethod
 
 
-class MusicProvider(ABC):
+class Provider(ABC):
     @abstractmethod
     @property
     def id(self) -> str:

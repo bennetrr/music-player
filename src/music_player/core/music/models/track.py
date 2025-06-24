@@ -4,20 +4,20 @@ from typing import Literal
 
 from pydantic import BaseModel, field_serializer, field_validator
 
-from music_player.core.music.abstractions import MusicProvider
+from music_player.core.music.abstractions import Provider
 
 
 class Track(BaseModel):
     """A playable item, e.g., a track or a radio station."""
 
     type: Literal['track', 'radio']
-    provider: MusicProvider
+    provider: Provider
     id: str
 
     @field_serializer('provider')
-    def serialize_provider(self, value: MusicProvider) -> str:
+    def serialize_provider(self, value: Provider) -> str:
         return value.id
 
     @field_validator('provider')
-    def validate_provider(cls, value: str) -> MusicProvider:
+    def validate_provider(cls, value: str) -> Provider:
         return NotImplemented
