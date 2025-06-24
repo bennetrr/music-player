@@ -1,5 +1,3 @@
-"""Raised when trying to set the volume outside the bounds of 0 % and 100 %."""
-
 __all__ = ['VolumeOutOfBoundsError']
 
 

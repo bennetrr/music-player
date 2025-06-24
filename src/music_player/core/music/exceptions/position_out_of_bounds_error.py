@@ -1,5 +1,3 @@
-"""Raised when trying to set the playback position outside the bounds of the current track."""
-
 __all__ = ['PositionOutOfBoundsError']
 
 

@@ -42,6 +42,8 @@ unfixable = [
     "ERA001", # Commented out code
 ]
 ignore = [
+    "D100",   # Missing docstring in a public package
+    "D104",   # Missing docstring in a public package
     "D203",   # Would put a blank line before class docstrings
     "D212",   # Would put the summary on the same line as the docstring qoutes
     "COM812", # Conflicts with formatter

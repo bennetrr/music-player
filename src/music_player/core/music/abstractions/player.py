@@ -1,5 +1,3 @@
-"""Abstract base class for a music player."""
-
 __all__ = ['Player']
 
 from abc import ABC, abstractmethod

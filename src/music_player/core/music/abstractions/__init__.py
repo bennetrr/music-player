@@ -1,4 +1,3 @@
-"""Abstractions for the music player core module."""
 
 __all__ = ['MusicProvider', 'Player', 'Queue', 'RepeatMode']
 

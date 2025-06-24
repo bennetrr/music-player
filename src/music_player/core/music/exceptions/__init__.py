@@ -1,5 +1,3 @@
-"""Exceptions for the music player core module."""
-
 __all__ = [
     'AlreadyPlayingError',
     'NotPlayingError',

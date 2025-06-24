@@ -1,5 +1,3 @@
-"""Class for managing events."""
-
 __all__ = ['EventManager']
 
 from collections.abc import Callable

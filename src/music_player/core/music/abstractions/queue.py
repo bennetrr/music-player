@@ -1,5 +1,3 @@
-"""Abstract base class for a track queue."""
-
 __all__ = ['Queue', 'RepeatMode']
 
 from abc import ABC, abstractmethod
