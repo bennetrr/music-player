@@ -3,6 +3,7 @@ __all__ = ['Player']
 from abc import ABC, abstractmethod
 
 from music_player.core.music import PlaybackStatus, RepeatMode, Track, TrackMetadata
+from music_player.core.plugin_manager import PluginContext
 from music_player.core.utils import EventManager
 
 
@@ -16,14 +17,18 @@ class Player(ABC):
     - As a remote player that forwards the track URIs to another device (e.g., a hifi system)
     """
 
+    _context: PluginContext
+
     _playback_status_change_event: EventManager[PlaybackStatus]
     _playback_error_event: EventManager[Exception]
     _track_change_event: EventManager[TrackMetadata]
     _position_change_event: EventManager[float]
     _volume_change_event: EventManager[float]
 
-    def __init__(self) -> None:
+    def __init__(self, context: PluginContext) -> None:
         """Initialize the player."""
+        self._context = context
+
         self._playback_status_change_event = EventManager()
         self._playback_error_event = EventManager()
         self._track_change_event = EventManager()
