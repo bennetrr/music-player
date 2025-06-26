@@ -8,6 +8,7 @@ __all__ = [
     'Playlist',
     'PositionOutOfBoundsError',
     'Provider',
+    'ProviderPlugin',
     'QueueOutOfBoundsError',
     'RepeatMode',
     'SearchResult',
@@ -28,3 +29,4 @@ from .exceptions import (
     VolumeOutOfBoundsError,
 )
 from .models import Album, Artist, Playlist, SearchResult, Track, TrackContainer, TrackMetadata
+from .plugin_definitions import ProviderPlugin
