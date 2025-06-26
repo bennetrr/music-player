@@ -11,3 +11,6 @@ class LinkAuthenticationStrategy(AuthenticationStrategy):
     """
 
     link: str
+
+    def __str__(self) -> str:
+        return f'Open {self.link} in your browser. The link will expire at {self.expires}'

@@ -13,3 +13,8 @@ class CodeAuthenticationStrategy(AuthenticationStrategy):
 
     code: str
     link: str
+
+    def __str__(self) -> str:
+        return (
+            f'Open {self.link} in your browser and enter the code {self.code}. The code will expire at {self.expires}'
+        )

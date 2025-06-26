@@ -1,4 +1,5 @@
 __all__ = [
+    'BasePlugin',
     'PluginAlreadyRegisteredError',
     'PluginContext',
     'PluginDefinition',
@@ -6,6 +7,7 @@ __all__ = [
     'plugin_manager',
 ]
 
+from .base_plugin import BasePlugin
 from .exceptions import PluginAlreadyRegisteredError, UnknownPluginTypeError
 from .plugin_context import PluginContext
 from .plugin_definition import PluginDefinition

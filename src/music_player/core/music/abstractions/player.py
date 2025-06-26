@@ -4,11 +4,11 @@ from abc import ABC, abstractmethod
 
 from music_player.core.music.enums import PlaybackStatus, RepeatMode
 from music_player.core.music.models import Track, TrackMetadata
-from music_player.core.plugin_manager import PluginContext
+from music_player.core.plugin_manager import BasePlugin, PluginContext
 from music_player.core.utils import EventManager
 
 
-class Player(ABC):
+class Player(BasePlugin, ABC):
     """
     A player is responsible for managing the queue and playing tracks.
 
@@ -18,8 +18,6 @@ class Player(ABC):
     - As a remote player that forwards the track URIs to another device (e.g., a hifi system)
     """
 
-    _context: PluginContext
-
     _playback_status_change_event: EventManager[PlaybackStatus]
     _playback_error_event: EventManager[Exception]
     _track_change_event: EventManager[TrackMetadata]
@@ -28,7 +26,7 @@ class Player(ABC):
 
     def __init__(self, context: PluginContext) -> None:
         """Initialize the player."""
-        self._context = context
+        super().__init__(context)
 
         self._playback_status_change_event = EventManager()
         self._playback_error_event = EventManager()
@@ -36,7 +34,7 @@ class Player(ABC):
         self._position_change_event = EventManager()
         self._volume_change_event = EventManager()
 
-    def close(self) -> None:  # noqa: B027
+    def close(self) -> None:
         """Clean up resources."""
 
     # region Playback Control

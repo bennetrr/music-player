@@ -2,8 +2,11 @@ from abc import ABC
 
 from pydantic import BaseModel, PrivateAttr
 
+from .base_plugin import BasePlugin
+from .plugin_context import PluginContext
 
-class PluginDefinition[TPlugin: object](BaseModel, ABC):
+
+class PluginDefinition[TPlugin: BasePlugin](BaseModel, ABC):
     """
     Registration details for a plugin.
 
@@ -24,5 +27,7 @@ class PluginDefinition[TPlugin: object](BaseModel, ABC):
     def instance(self) -> TPlugin:
         """Get the plugin instance."""
         if self._instance is None:
-            self._instance = self.cls()
+            context = PluginContext.create(plugin_id=self.id)
+            self._instance = self.cls(context)
+
         return self._instance

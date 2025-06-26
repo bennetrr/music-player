@@ -61,9 +61,9 @@ class TidalProvider(Provider):
         return AuthenticationResult(
             result=login_task,
             strategies=[
-                LinkAuthenticationStrategy(link=login_details.verification_uri_complete, expires=expires),
+                LinkAuthenticationStrategy(link=f'https://{login_details.verification_uri_complete}', expires=expires),
                 CodeAuthenticationStrategy(
-                    link=login_details.verification_uri, code=login_details.user_code, expires=expires
+                    link=f'https://{login_details.verification_uri}', code=login_details.user_code, expires=expires
                 ),
             ],
         )

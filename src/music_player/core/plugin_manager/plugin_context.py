@@ -1,6 +1,6 @@
 __all__ = ['PluginContext']
 
-from asyncio import AbstractEventLoop
+from asyncio import AbstractEventLoop, get_running_loop
 
 from pydantic import BaseModel, ConfigDict
 
@@ -13,3 +13,8 @@ class PluginContext(BaseModel):
     config: dict[str, str]
     credentials: dict[str, str]
     loop: AbstractEventLoop
+
+    @classmethod
+    def create(cls, plugin_id: str) -> 'PluginContext':
+        """Create a new plugin context."""
+        return cls(config={}, credentials={}, loop=get_running_loop())

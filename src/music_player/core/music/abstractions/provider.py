@@ -4,10 +4,10 @@ from abc import ABC, abstractmethod
 
 from music_player.core.authentication import AuthenticationResult
 from music_player.core.music.models import SearchResult, Track, TrackContainer, TrackMetadata
-from music_player.core.plugin_manager import PluginContext
+from music_player.core.plugin_manager import BasePlugin, PluginContext
 
 
-class Provider(ABC):
+class Provider(BasePlugin, ABC):
     """
     A provider is responsible for accessing a music library from a service.
 
@@ -19,13 +19,11 @@ class Provider(ABC):
     - Getting metadata for a track
     """
 
-    _context: PluginContext
-
     def __init__(self, context: PluginContext) -> None:
         """Initialize the provider."""
-        self._context = context
+        super().__init__(context)
 
-    def close(self) -> None:  # noqa: B027
+    def close(self) -> None:
         """Clean up resources."""
 
     @property

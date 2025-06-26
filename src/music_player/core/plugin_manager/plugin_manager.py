@@ -22,8 +22,10 @@ class PluginManager:
     """
     The plugin manager is responsible for loading and managing plugins.
 
-    Each plugin must be in the ``music_player.plugin`` namespace and have a ``__init__.py`` file,
-    which registers all plugin classes in the plugin manager.
+    Each plugin package must be in the ``music_player.plugin`` namespace and have a ``__init__.py`` file.
+    The ``__init__.py`` file must register all plugins in the plugin manager.
+
+    Every plugin is initialized with a plugin context, which gives it access to configuration and shared resources.
     """
 
     _plugins_by_id: dict[str, PluginDefinition[Any]]
@@ -36,12 +38,12 @@ class PluginManager:
 
     @staticmethod
     def load_plugins() -> None:
-        """Load all plugins in the ``music_player.plugin`` namespace."""
-        plugins: list[str] = [name for _, name, _ in _iter_namespace(music_player.plugin)]
-        logger.info('Found %d plugins: %s', len(plugins), plugins)
+        """Load all plugin packages in the ``music_player.plugin`` namespace."""
+        plugin_pkgs: list[str] = [name for _, name, _ in _iter_namespace(music_player.plugin)]
+        logger.info('Found %d plugin package(s): %s', len(plugin_pkgs), plugin_pkgs)
 
-        for plugin in plugins:
-            import_module(plugin)
+        for pkg in plugin_pkgs:
+            import_module(pkg)
 
     def register(self, plugin: PluginDefinition[Any]) -> None:
         """
@@ -53,13 +55,11 @@ class PluginManager:
         if plugin.id in self._plugins_by_id:
             raise PluginAlreadyRegisteredError(plugin)
 
-        for baseclass in self._plugins_by_cls:
-            if issubclass(plugin.cls, baseclass):
-                self._plugins_by_cls[baseclass].append(plugin)
-                self._plugins_by_id[plugin.id] = plugin
-                return
+        if not isinstance(plugin, PluginDefinition):
+            raise UnknownPluginTypeError(plugin)
 
-        raise UnknownPluginTypeError(plugin)
+        self._plugins_by_id[plugin.id] = plugin
+        self._plugins_by_cls.setdefault(plugin.cls, []).append(plugin)
 
     def get[TPlugin: PluginDefinition[Any]](self, t: type[TPlugin], plugin_id: str) -> TPlugin:  # noqa: ARG002
         """
@@ -75,6 +75,8 @@ plugin_manager = PluginManager()
 """
 The plugin manager is responsible for loading and managing plugins.
 
-Each plugin must be in the ``music_player.plugin`` namespace and have a ``__init__.py`` file,
-which registers all plugin classes in the plugin manager.
+Each plugin package must be in the ``music_player.plugin`` namespace and have a ``__init__.py`` file.
+The ``__init__.py`` file must register all plugins in the plugin manager.
+
+Every plugin is initialized with a plugin context, which gives it access to configuration and shared resources.
 """
