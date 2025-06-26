@@ -2,6 +2,7 @@ import asyncio
 import logging
 import sys
 
+from music_player.core.constants import CONFIG_DIR
 from music_player.core.music import ProviderPlugin
 from music_player.core.plugin_manager import plugin_manager
 
@@ -20,6 +21,7 @@ logger = logging.getLogger('music_player.core.main')
 async def main() -> None:
     """Main entry point of the application."""
     logger.info('Starting music player...')
+    logger.info('Config directory: %s', CONFIG_DIR)
     plugin_manager.load_plugins()
 
     tidal = plugin_manager.get(ProviderPlugin, 'ing.ranft.bennet.tidal').instance()

@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from logging import getLogger
 
 import tidalapi
+from pydantic import BaseModel
 
 from music_player.core.authentication import (
     AuthenticationResult,
@@ -14,6 +15,16 @@ from music_player.core.music import Provider, SearchResult, Track, TrackContaine
 from music_player.core.plugin_manager import PluginContext
 
 logger = getLogger(__name__)
+
+
+class Credentials(BaseModel):
+    token_type: str
+    access_token: str
+    refresh_token: str
+    expiry_time: datetime
+
+
+class Config(BaseModel): ...
 
 
 class TidalProvider(Provider):
@@ -35,15 +46,12 @@ class TidalProvider(Provider):
 
     async def login(self) -> AuthenticationResult:
         """Log in to the service."""
-        if 'access_token' in self._context.credentials:
+        credentials = self._context.get_credentials(Credentials)
+
+        if credentials is not None:
             logger.debug('Attempting to restore session')
 
-            self._tidal.load_oauth_session(
-                self._context.credentials['token_type'],
-                self._context.credentials['access_token'],
-                self._context.credentials['refresh_token'],
-                self._context.credentials['expiry_time'],
-            )
+            self._tidal.load_oauth_session(**credentials.model_dump())
 
             if self._tidal.check_login():
                 logger.info('Successfully logged in with stored credentials')
@@ -82,10 +90,14 @@ class TidalProvider(Provider):
 
     def _save_credentials(self) -> None:
         """Save the credentials to the credential store."""
-        self._context.credentials['token_type'] = self._tidal.token_type
-        self._context.credentials['access_token'] = self._tidal.access_token
-        self._context.credentials['refresh_token'] = self._tidal.refresh_token
-        self._context.credentials['expiry_time'] = self._tidal.expiry_time
+        self._context.set_credentials(
+            Credentials(
+                token_type=self._tidal.token_type,
+                access_token=self._tidal.access_token,
+                refresh_token=self._tidal.refresh_token,
+                expiry_time=self._tidal.expiry_time,
+            )
+        )
 
     async def search(self, query: str) -> SearchResult:
         """Search the provider's library."""

@@ -27,7 +27,7 @@ class PluginDefinition[TPlugin: BasePlugin](BaseModel, ABC):
     def instance(self) -> TPlugin:
         """Get the plugin instance."""
         if self._instance is None:
-            context = PluginContext.create(plugin_id=self.id)
+            context = PluginContext(self.id)
             self._instance = self.cls(context)
 
         return self._instance
