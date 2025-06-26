@@ -2,7 +2,7 @@ __all__ = ['PluginAlreadyRegisteredError']
 
 from typing import Any
 
-from music_player.core.plugin_manager import PluginDefinition
+from music_player.core.plugin_manager.plugin_definition import PluginDefinition
 
 
 class PluginAlreadyRegisteredError(ValueError):

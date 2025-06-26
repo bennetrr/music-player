@@ -7,8 +7,9 @@ from pkgutil import ModuleInfo, iter_modules
 from typing import Any, cast
 
 import music_player.plugin
-from music_player.core.plugin_manager import PluginAlreadyRegisteredError, PluginDefinition
-from music_player.core.plugin_manager.exceptions import UnknownPluginTypeError
+
+from .exceptions import PluginAlreadyRegisteredError, UnknownPluginTypeError
+from .plugin_definition import PluginDefinition
 
 logger = getLogger(__name__)
 

@@ -2,7 +2,7 @@ from asyncio import Task
 
 from pydantic import BaseModel, Field
 
-from music_player.core.authentication import AuthenticationStrategy
+from .authentication_strategy import AuthenticationStrategy
 
 
 class AuthenticationResult(BaseModel):

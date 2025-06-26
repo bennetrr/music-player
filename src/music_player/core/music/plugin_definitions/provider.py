@@ -1,4 +1,4 @@
-from music_player.core.music import Provider
+from music_player.core.music.abstractions import Provider
 from music_player.core.plugin_manager import PluginDefinition
 
 

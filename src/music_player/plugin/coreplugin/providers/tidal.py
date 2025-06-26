@@ -53,7 +53,7 @@ class TidalProvider(Provider):
         logger.debug('Starting login flow')
 
         login_details, future = self._tidal.login_oauth()
-        expires = datetime.now() + timedelta(seconds=login_details.expires_in)
+        expires = datetime.now().astimezone() + timedelta(seconds=login_details.expires_in)
         login_task = self._context.loop.create_task(self._handle_second_login_step(future))
 
         # TODO: Schedule token refreshing somewhere #0
@@ -68,7 +68,7 @@ class TidalProvider(Provider):
             ],
         )
 
-    async def _handle_second_login_step(self, future: concurrent.futures.Future) -> bool:
+    async def _handle_second_login_step(self, future: concurrent.futures.Future[None]) -> bool:
         """Handle the second login step."""
         await asyncio.wrap_future(future)
 
@@ -89,12 +89,16 @@ class TidalProvider(Provider):
 
     async def search(self, query: str) -> SearchResult:
         """Search the provider's library."""
+        return NotImplemented
 
     async def list(self, arg: TrackContainer) -> SearchResult:
         """List the content in the provider's library."""
+        return NotImplemented
 
     async def resolve_uri(self, track: Track) -> str:
         """Resolve a track to a playable URI."""
+        return NotImplemented
 
     async def get_metadata(self, track: Track) -> TrackMetadata:
         """Get the metadata for a track."""
+        return NotImplemented

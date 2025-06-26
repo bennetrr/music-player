@@ -1,6 +1,6 @@
 __all__ = ['CodeAuthenticationStrategy']
 
-from music_player.core.authentication import AuthenticationStrategy
+from .authentication_strategy import AuthenticationStrategy
 
 
 class CodeAuthenticationStrategy(AuthenticationStrategy):

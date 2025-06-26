@@ -3,7 +3,7 @@ __all__ = ['Provider']
 from abc import ABC, abstractmethod
 
 from music_player.core.authentication import AuthenticationResult
-from music_player.core.music import SearchResult, Track, TrackContainer, TrackMetadata
+from music_player.core.music.models import SearchResult, Track, TrackContainer, TrackMetadata
 from music_player.core.plugin_manager import PluginContext
 
 

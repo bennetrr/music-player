@@ -2,7 +2,10 @@ __all__ = ['SearchResult']
 
 from pydantic import BaseModel, Field
 
-from music_player.core.music import Album, Artist, Playlist, Track
+from .album import Album
+from .artist import Artist
+from .playlist import Playlist
+from .track import Track
 
 
 class SearchResult(BaseModel):
