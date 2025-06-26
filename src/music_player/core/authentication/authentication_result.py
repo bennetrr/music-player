@@ -1,6 +1,6 @@
 from asyncio import Task
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from .authentication_strategy import AuthenticationStrategy
 
@@ -18,6 +18,8 @@ class AuthenticationResult(BaseModel):
     :var result: The result of the authentication attempt.
     :var strategies: The authentication strategies if applicable.
     """
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     result: bool | Task[bool]
     strategies: list[AuthenticationStrategy] = Field(default_factory=list)

@@ -1,6 +1,6 @@
 from abc import ABC
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, PrivateAttr
 
 
 class PluginDefinition[TPlugin: object](BaseModel, ABC):
@@ -19,7 +19,7 @@ class PluginDefinition[TPlugin: object](BaseModel, ABC):
     icon: str
     cls: type[TPlugin]
 
-    _instance: TPlugin | None = Field(default=None, init=False)
+    _instance: TPlugin | None = PrivateAttr(default=None)
 
     def instance(self) -> TPlugin:
         """Get the plugin instance."""

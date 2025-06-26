@@ -60,4 +60,5 @@ docstring-code-format = true
 
 [tool.mypy]
 mypy_path = ".mypy_stubs"
+plugins = ["pydantic.mypy"]
 strict = true
