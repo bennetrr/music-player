@@ -24,6 +24,12 @@ class PluginDefinition[TPlugin: BasePlugin](BaseModel, ABC):
 
     _instance: TPlugin | None = PrivateAttr(default=None)
 
+    def close(self) -> None:
+        """Clean up resources."""
+        if self._instance is not None:
+            self._instance.close()
+            self._instance = None
+
     def instance(self) -> TPlugin:
         """Get the plugin instance."""
         if self._instance is None:

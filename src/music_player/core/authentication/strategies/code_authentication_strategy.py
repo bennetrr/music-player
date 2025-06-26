@@ -1,6 +1,6 @@
 __all__ = ['CodeAuthenticationStrategy']
 
-from .authentication_strategy import AuthenticationStrategy
+from music_player.core.authentication.authentication_strategy import AuthenticationStrategy
 
 
 class CodeAuthenticationStrategy(AuthenticationStrategy):
@@ -15,6 +15,7 @@ class CodeAuthenticationStrategy(AuthenticationStrategy):
     link: str
 
     def __str__(self) -> str:
+        """Return a string representation of the strategy."""
         return (
             f'Open {self.link} in your browser and enter the code {self.code}. The code will expire at {self.expires}'
         )

@@ -2,5 +2,4 @@ __all__ = ['AuthenticationResult', 'AuthenticationStrategy', 'CodeAuthentication
 
 from .authentication_result import AuthenticationResult
 from .authentication_strategy import AuthenticationStrategy
-from .code_authentication_strategy import CodeAuthenticationStrategy
-from .link_authentication_strategy import LinkAuthenticationStrategy
+from .strategies import CodeAuthenticationStrategy, LinkAuthenticationStrategy

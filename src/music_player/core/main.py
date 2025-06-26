@@ -21,26 +21,28 @@ logger = logging.getLogger('music_player.core.main')
 async def main() -> None:
     """Main entry point of the application."""
     logger.info('Starting music player...')
-    logger.info('Config directory: %s', CONFIG_DIR)
-    plugin_manager.load_plugins()
+    logger.info('Config directory: "%s"', CONFIG_DIR)
 
-    tidal = plugin_manager.get(ProviderPlugin, 'ing.ranft.bennet.tidal').instance()
-    login_result = await tidal.login()
+    with plugin_manager:
+        plugin_manager.load_plugins()
 
-    if login_result.result is True:
-        logger.info('Successfully logged in')
-    elif login_result.result is False:
-        logger.error('Failed to log in')
-    else:
-        for strategy in login_result.strategies:
-            logger.info('%s', strategy)
+        tidal = plugin_manager.get(ProviderPlugin, 'ing.ranft.bennet.tidal').instance()
+        login_result = await tidal.login()
 
-        result = await login_result.result
-
-        if result:
+        if login_result.result is True:
             logger.info('Successfully logged in')
-        else:
+        elif login_result.result is False:
             logger.error('Failed to log in')
+        else:
+            for strategy in login_result.strategies:
+                logger.info('%s', strategy)
+
+            result = await login_result.result
+
+            if result:
+                logger.info('Successfully logged in')
+            else:
+                logger.error('Failed to log in')
 
 
 if __name__ == '__main__':

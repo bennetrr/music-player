@@ -17,14 +17,14 @@ from music_player.core.plugin_manager import PluginContext
 logger = getLogger(__name__)
 
 
-class Credentials(BaseModel):
+class _Credentials(BaseModel):
     token_type: str
     access_token: str
     refresh_token: str
     expiry_time: datetime
 
 
-class Config(BaseModel): ...
+class _Config(BaseModel): ...
 
 
 class TidalProvider(Provider):
@@ -46,7 +46,7 @@ class TidalProvider(Provider):
 
     async def login(self) -> AuthenticationResult:
         """Log in to the service."""
-        credentials = self._context.get_credentials(Credentials)
+        credentials = self._context.get_credentials(_Credentials)
 
         if credentials is not None:
             logger.debug('Attempting to restore session')
@@ -54,7 +54,7 @@ class TidalProvider(Provider):
             self._tidal.load_oauth_session(**credentials.model_dump())
 
             if self._tidal.check_login():
-                logger.info('Successfully logged in with stored credentials')
+                logger.debug('Successfully logged in with stored credentials')
                 self._save_credentials()
                 return AuthenticationResult(result=True)
 
@@ -85,13 +85,13 @@ class TidalProvider(Provider):
             return False
 
         self._save_credentials()
-        logger.info('Successfully logged in')
+        logger.debug('Successfully logged in')
         return True
 
     def _save_credentials(self) -> None:
         """Save the credentials to the credential store."""
         self._context.set_credentials(
-            Credentials(
+            _Credentials(
                 token_type=self._tidal.token_type,
                 access_token=self._tidal.access_token,
                 refresh_token=self._tidal.refresh_token,

@@ -1,6 +1,7 @@
 __all__ = ['plugin_manager']
 
 from collections.abc import Iterator
+from contextlib import AbstractContextManager
 from importlib import import_module
 from logging import getLogger
 from pkgutil import ModuleInfo, iter_modules
@@ -18,7 +19,7 @@ def _iter_namespace(namespace_pkg: Any) -> Iterator[ModuleInfo]:  # noqa: ANN401
     return iter_modules(namespace_pkg.__path__, namespace_pkg.__name__ + '.')
 
 
-class PluginManager:
+class PluginManager(AbstractContextManager['PluginManager']):
     """
     The plugin manager is responsible for loading and managing plugins.
 
@@ -35,6 +36,16 @@ class PluginManager:
         """Initialize the plugin manager."""
         self._plugins_by_id = {}
         self._plugins_by_cls = {}
+
+    def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
+        self.close()
+
+    def close(self) -> None:
+        """Clean up resources."""
+        for plugin in self._plugins_by_id.values():
+            plugin.close()
+
+        logger.info('Cleaned up plugins')
 
     @staticmethod
     def load_plugins() -> None:
@@ -60,6 +71,7 @@ class PluginManager:
 
         self._plugins_by_id[plugin.id] = plugin
         self._plugins_by_cls.setdefault(plugin.cls, []).append(plugin)
+        logger.info('Registered plugin "%s"', plugin.id)
 
     def get[TPlugin: PluginDefinition[Any]](self, t: type[TPlugin], plugin_id: str) -> TPlugin:  # noqa: ARG002
         """
