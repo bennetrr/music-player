@@ -11,7 +11,7 @@ from music_player.core.authentication import (
     CodeAuthenticationStrategy,
     LinkAuthenticationStrategy,
 )
-from music_player.core.music import Provider, SearchResult, Track, TrackContainer, TrackMetadata
+from music_player.core.music import Playable, PlayableContainer, Provider, SearchResult, Track
 from music_player.core.plugin_manager import PluginContext
 
 logger = getLogger(__name__)
@@ -103,14 +103,14 @@ class TidalProvider(Provider):
         """Search the provider's library."""
         return NotImplemented
 
-    async def list(self, arg: TrackContainer) -> SearchResult:
+    async def list(self, arg: PlayableContainer) -> SearchResult:
         """List the content in the provider's library."""
         return NotImplemented
 
-    async def resolve_uri(self, track: Track) -> str:
+    async def resolve_uri(self, track: Playable) -> str:
         """Resolve a track to a playable URI."""
         return NotImplemented
 
-    async def get_metadata(self, track: Track) -> TrackMetadata:
+    async def get_metadata(self, track: Playable) -> Track:
         """Get the metadata for a track."""
         return NotImplemented

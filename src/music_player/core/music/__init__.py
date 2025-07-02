@@ -3,6 +3,9 @@ __all__ = [
     'AlreadyPlayingError',
     'Artist',
     'NotPlayingError',
+    'Playable',
+    'Playable',
+    'PlayableContainer',
     'PlaybackStatus',
     'Player',
     'Playlist',
@@ -10,17 +13,15 @@ __all__ = [
     'Provider',
     'ProviderPlugin',
     'QueueOutOfBoundsError',
+    'Radio',
     'RepeatMode',
     'SearchResult',
     'Track',
-    'TrackContainer',
-    'TrackMetadata',
-    'TrackType',
     'VolumeOutOfBoundsError',
 ]
 
 from .abstractions import Player, Provider
-from .enums import PlaybackStatus, RepeatMode, TrackType
+from .enums import PlaybackStatus, RepeatMode
 from .exceptions import (
     AlreadyPlayingError,
     NotPlayingError,
@@ -28,5 +29,5 @@ from .exceptions import (
     QueueOutOfBoundsError,
     VolumeOutOfBoundsError,
 )
-from .models import Album, Artist, Playlist, SearchResult, Track, TrackContainer, TrackMetadata
+from .models import Album, Artist, Playable, PlayableContainer, Playlist, Radio, SearchResult, Track
 from .plugin_definitions import ProviderPlugin

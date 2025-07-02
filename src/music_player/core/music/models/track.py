@@ -1,19 +1,25 @@
 __all__ = ['Track']
 
-from pydantic import BaseModel
+from pydantic import AnyUrl
 
-from music_player.core.music.enums import TrackType
+from .playable import Playable
 
 
-class Track(BaseModel):
+class Track(Playable):
     """
-    A playable item, e.g., a song, podcast, or radio station.
+    A track.
 
-    :var type: The type of track. This specifies if the track is an endless stream or not.
-    :var provider_id: The ID of the provider where this track comes from.
-    :var id: A provider-dependent identifier for this track.
+    :var title: The title of the track.
+    :var artist: The artist of the track.
+    :var album: The album where the track is on.
+    :var cover_uri: The URL of the cover image for the track.
+    :var duration: The duration of the track in seconds.
     """
 
-    type: TrackType
-    provider_id: str
-    id: str
+    title: str
+    artist: str
+    artist_id: str
+    album: str | None
+    album_id: str | None
+    cover_uri: AnyUrl | None
+    duration: int | None

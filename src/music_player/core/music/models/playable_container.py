@@ -1,13 +1,13 @@
-__all__ = ['TrackContainer']
+__all__ = ['PlayableContainer']
 
 from abc import ABC
 
 from pydantic import BaseModel
 
 
-class TrackContainer(BaseModel, ABC):
+class PlayableContainer(BaseModel, ABC):
     """
-    Something that contains tracks, like a playlist or album.
+    Something that contains tracks, e.g., a playlist or album.
 
     :var provider_id: The ID of the provider where this track container comes from.
     :var id: A provider-dependent identifier for this track container.

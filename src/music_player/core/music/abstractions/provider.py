@@ -3,7 +3,7 @@ __all__ = ['Provider']
 from abc import ABC, abstractmethod
 
 from music_player.core.authentication import AuthenticationResult
-from music_player.core.music.models import SearchResult, Track, TrackContainer, TrackMetadata
+from music_player.core.music.models import Playable, PlayableContainer, SearchResult, Track
 from music_player.core.plugin_manager import BasePlugin, PluginContext
 
 
@@ -40,13 +40,13 @@ class Provider(BasePlugin, ABC):
         """Search the provider's library."""
 
     @abstractmethod
-    async def list(self, arg: TrackContainer) -> SearchResult:
+    async def list(self, arg: PlayableContainer) -> SearchResult:
         """List the content in the provider's library."""
 
     @abstractmethod
-    async def resolve_uri(self, track: Track) -> str:
+    async def resolve_uri(self, track: Playable) -> str:
         """Resolve a track to a playable URI."""
 
     @abstractmethod
-    async def get_metadata(self, track: Track) -> TrackMetadata:
+    async def get_metadata(self, track: Playable) -> Track:
         """Get the metadata for a track."""

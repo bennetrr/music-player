@@ -3,7 +3,7 @@ __all__ = ['Player']
 from abc import ABC, abstractmethod
 
 from music_player.core.music.enums import PlaybackStatus, RepeatMode
-from music_player.core.music.models import Track, TrackMetadata
+from music_player.core.music.models import Playable, Track
 from music_player.core.plugin_manager import BasePlugin, PluginContext
 from music_player.core.utils import EventManager
 
@@ -20,7 +20,7 @@ class Player(BasePlugin, ABC):
 
     _playback_status_change_event: EventManager[PlaybackStatus]
     _playback_error_event: EventManager[Exception]
-    _track_change_event: EventManager[TrackMetadata]
+    _track_change_event: EventManager[Track]
     _position_change_event: EventManager[float]
     _volume_change_event: EventManager[float]
 
@@ -121,7 +121,7 @@ class Player(BasePlugin, ABC):
 
     @property
     @abstractmethod
-    def current(self) -> TrackMetadata | None:
+    def current(self) -> Track | None:
         """
         Get the metadata of the currently playing track.
 
@@ -133,7 +133,7 @@ class Player(BasePlugin, ABC):
     # region Queue Management
     @property
     @abstractmethod
-    def items(self) -> list[TrackMetadata]:
+    def items(self) -> list[Playable]:
         """Get the metadata of all queued tracks."""
 
     @abstractmethod
@@ -145,7 +145,7 @@ class Player(BasePlugin, ABC):
         """
 
     @abstractmethod
-    def add(self, track: Track | list[Track]) -> None:
+    def add(self, track: Playable | list[Playable]) -> None:
         """
         Add a track / list of tracks to the end of the queue.
 
@@ -153,7 +153,7 @@ class Player(BasePlugin, ABC):
         """
 
     @abstractmethod
-    def add_after_current(self, track: Track | list[Track]) -> None:
+    def add_after_current(self, track: Playable | list[Playable]) -> None:
         """
         Add a track / list of tracks to the queue right after the current track.
 
@@ -161,7 +161,7 @@ class Player(BasePlugin, ABC):
         """
 
     @abstractmethod
-    def remove(self, track: Track) -> None:
+    def remove(self, track: Playable) -> None:
         """
         Remove a track from the queue.
 
@@ -170,7 +170,7 @@ class Player(BasePlugin, ABC):
         """
 
     @abstractmethod
-    def move(self, track: Track, to: int) -> None:
+    def move(self, track: Playable, to: int) -> None:
         """
         Move a track to a new index.
 
@@ -274,7 +274,7 @@ class Player(BasePlugin, ABC):
         return self._playback_error_event
 
     @property
-    def track_change_event(self) -> EventManager[TrackMetadata]:
+    def track_change_event(self) -> EventManager[Track]:
         """Invoked when the currently playing track changes."""
         return self._track_change_event
 

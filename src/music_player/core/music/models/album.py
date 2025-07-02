@@ -2,10 +2,10 @@ __all__ = ['Album']
 
 from pydantic import AnyUrl
 
-from .track_container import TrackContainer
+from .playable_container import PlayableContainer
 
 
-class Album(TrackContainer):
+class Album(PlayableContainer):
     """An album."""
 
     name: str
