@@ -11,7 +11,7 @@ from music_player.core.authentication import (
     CodeAuthenticationStrategy,
     LinkAuthenticationStrategy,
 )
-from music_player.core.music import Playable, PlayableContainer, Provider, SearchResult, Track
+from music_player.core.music import Album, Artist, Playable, PlayableContainer, Provider, SearchResult, Track
 from music_player.core.plugin_manager import PluginContext
 
 logger = getLogger(__name__)
@@ -101,7 +101,28 @@ class TidalProvider(Provider):
 
     async def search(self, query: str) -> SearchResult:
         """Search the provider's library."""
-        return NotImplemented
+        results = self._tidal.search(query)
+
+        return SearchResult(
+            artists=[
+                Artist(provider_id=self.id, id=str(x.id), name=x.name, cover_uri=x.image(750))
+                for x in results['artists']
+            ],
+            albums=[
+                Album(
+                    provider_id=self.id,
+                    id=str(x.id),
+                    name=x.name,
+                    artist=x.artist.name,
+                    artist_id=str(x.artist.id),
+                    cover_uri=x.image(1280),
+                    duration=x.duration,
+                    year=x.year,
+                    number_of_tracks=x.num_tracks,
+                )
+                for x in results['albums']
+            ],
+        )
 
     async def list(self, arg: PlayableContainer) -> SearchResult:
         """List the content in the provider's library."""

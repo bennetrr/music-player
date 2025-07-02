@@ -1,6 +1,5 @@
 __all__ = ['Track']
 
-from pydantic import AnyUrl
 
 from .playable import Playable
 
@@ -21,5 +20,5 @@ class Track(Playable):
     artist_id: str
     album: str | None
     album_id: str | None
-    cover_uri: AnyUrl | None
+    cover_uri: str | None
     duration: int | None

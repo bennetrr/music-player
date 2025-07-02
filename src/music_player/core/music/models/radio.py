@@ -1,6 +1,5 @@
 __all__ = ['Radio']
 
-from pydantic import AnyUrl
 
 from .playable import Playable
 
@@ -14,4 +13,4 @@ class Radio(Playable):
     """
 
     title: str
-    cover_uri: AnyUrl | None
+    cover_uri: str | None

@@ -1,6 +1,5 @@
 __all__ = ['Album']
 
-from pydantic import AnyUrl
 
 from .playable_container import PlayableContainer
 
@@ -11,7 +10,7 @@ class Album(PlayableContainer):
     name: str
     artist: str
     artist_id: str
-    cover_uri: AnyUrl | None
+    cover_uri: str | None
     year: int | None
     number_of_tracks: int
     duration: int
