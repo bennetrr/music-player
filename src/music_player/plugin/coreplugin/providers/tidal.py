@@ -17,6 +17,8 @@ from music_player.core.plugin_manager import PluginContext
 
 logger = getLogger(__name__)
 
+type TidalObject = tidalapi.Artist | tidalapi.Album | tidalapi.Playlist | tidalapi.Track
+
 
 class _Credentials(BaseModel):
     token_type: str
@@ -98,6 +100,19 @@ class TidalProvider(Provider):
             )
         )
 
+    async def _get_tidal_object(self, arg: PlayableContainer | Playable) -> TidalObject:
+        match arg:
+            case Artist():
+                return self._tidal.artist(arg.id)
+            case Album():
+                return self._tidal.album(arg.id)
+            case Playlist():
+                return self._tidal.playlist(arg.id)
+            case Track():
+                return self._tidal.track(arg.id)
+            case _:
+                raise ValueError(f'Invalid argument type: {type(arg)}')
+
     async def _to_search_result(
         self,
         artists: list[tidalapi.Artist] | None = None,
@@ -158,7 +173,19 @@ class TidalProvider(Provider):
 
     async def list(self, arg: PlayableContainer) -> SearchResult:
         """List the content in the provider's library."""
-        return NotImplemented
+        obj = await self._get_tidal_object(arg)
+
+        match obj:
+            case tidalapi.Artist():
+                return await self._to_search_result(
+                    albums=[*obj.get_albums(), *obj.get_ep_singles(), *obj.get_other()], tracks=obj.get_top_tracks()
+                )
+            case tidalapi.Album():
+                return await self._to_search_result(tracks=obj.tracks())
+            case tidalapi.Playlist():
+                return await self._to_search_result(tracks=obj.tracks())
+            case _:
+                raise ValueError(f'Invalid argument type: {type(arg)}')
 
     async def resolve_uri(self, track: Playable) -> str:
         """Resolve a track to a playable URI."""

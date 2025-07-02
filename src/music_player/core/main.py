@@ -6,11 +6,11 @@ from collections.abc import Callable, Coroutine
 from typing import Any
 
 from rich import print  # noqa: A004
-from rich.table import Table, Column
+from rich.table import Table
 from textual_image.renderable import Image as CliImage
 
 from music_player.core.constants import CONFIG_DIR
-from music_player.core.music import ProviderPlugin
+from music_player.core.music import ProviderPlugin, SearchResult
 from music_player.core.plugin_manager import plugin_manager
 
 root_logger = logging.getLogger()
@@ -29,75 +29,99 @@ commands: dict[str, Command] = {}
 
 
 def command(cmd_func: Command) -> Command:
-    """Decorator for registering a command."""
+    """Register a function as a command."""
     commands[cmd_func.__name__] = cmd_func
     return cmd_func
 
 
-@command
-async def search(query: str | None) -> None:
-    """Search for a track."""
-    print(f'Searching for "{query}"...')
-    tidal = plugin_manager.get(ProviderPlugin, 'ing.ranft.bennet.tidal').instance()
+search_result: SearchResult | None = None
 
-    if not query:
-        print('No query provided')
-        return
 
-    res = await tidal.search(query)
-
-    table = Table('Image', 'Name', Column('ID', no_wrap=True), title='Artists')
-    for artist in res.artists:
+def _render_search_result(_search_result: SearchResult) -> None:
+    table = Table('ID', 'Image', 'Name', title='Artists')
+    for i, artist in enumerate(_search_result.artists):
         img = (
             CliImage(urllib.request.urlretrieve(artist.cover_uri)[0], width='auto', height=4)
             if artist.cover_uri
             else None
         )
-        table.add_row(img, artist.name, artist.id)
+        table.add_row(str(i), img, artist.name)
     print(table)
 
-    table = Table('Image', 'Name', 'Year', 'Duration', 'Number of Tracks', Column('ID', no_wrap=True), title='Albums')
-    for album in res.albums:
+    table = Table('ID', 'Image', 'Name', 'Year', 'Duration', 'Number of Tracks', title='Albums')
+    for i, album in enumerate(_search_result.albums):
         img = (
             CliImage(urllib.request.urlretrieve(album.cover_uri)[0], width='auto', height=4)
             if album.cover_uri
             else None
         )
         table.add_row(
+            str(i),
             img,
             album.name,
             str(album.year),
             f'{album.duration // 60}:{album.duration % 60:d}',
             str(album.number_of_tracks),
-            album.id,
         )
     print(table)
 
-    table = Table('Image', 'Name', 'Duration', 'Number of Tracks', Column('ID', no_wrap=True), title='Playlists')
-    for playlist in res.playlists:
+    table = Table('ID', 'Image', 'Name', 'Duration', 'Number of Tracks', title='Playlists')
+    for i, playlist in enumerate(_search_result.playlists):
         img = (
             CliImage(urllib.request.urlretrieve(playlist.cover_uri)[0], width='auto', height=4)
             if playlist.cover_uri
             else None
         )
         table.add_row(
+            str(i),
             img,
             playlist.name,
             f'{playlist.duration // 60}:{playlist.duration % 60:d}',
             str(playlist.number_of_tracks),
-            playlist.id,
         )
     print(table)
 
-    table = Table('Image', 'Name', Column('ID', no_wrap=True), title='Tracks')
-    for track in res.tracks:
+    table = Table('ID', 'Image', 'Name', title='Tracks')
+    for i, track in enumerate(_search_result.tracks):
         img = (
             CliImage(urllib.request.urlretrieve(track.cover_uri)[0], width='auto', height=4)
             if track.cover_uri
             else None
         )
-        table.add_row(img, track.title, track.id)
+        table.add_row(str(i), img, track.title)
     print(table)
+
+
+@command
+async def search(query: str | None) -> None:
+    """<query>   Search for music in TIDAL."""
+    if not query:
+        print('No query provided')
+        return
+
+    tidal = plugin_manager.get(ProviderPlugin, 'ing.ranft.bennet.tidal').instance()
+    global search_result
+    search_result = await tidal.search(query)
+    _render_search_result(search_result)
+
+
+@command
+async def ls(inputs: str | None) -> None:
+    """<type> <id>   List content in the music library."""
+    if not inputs:
+        print('No inputs provided')
+        return
+
+    if not search_result:
+        print('You have to search first')
+        return
+
+    _type, _id = inputs.split(' ', 1)
+    obj = search_result.__getattribute__(f'{_type}s')[int(_id)]
+
+    tidal = plugin_manager.get(ProviderPlugin, 'ing.ranft.bennet.tidal').instance()
+    res = await tidal.list(obj)
+    _render_search_result(res)
 
 
 async def main() -> None:
