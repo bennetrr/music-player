@@ -2,6 +2,7 @@ import asyncio
 import concurrent.futures
 from datetime import datetime, timedelta
 from logging import getLogger
+from typing import Any
 
 import tidalapi
 from pydantic import BaseModel
@@ -11,7 +12,7 @@ from music_player.core.authentication import (
     CodeAuthenticationStrategy,
     LinkAuthenticationStrategy,
 )
-from music_player.core.music import Album, Artist, Playable, PlayableContainer, Provider, SearchResult, Track
+from music_player.core.music import Album, Artist, Playable, PlayableContainer, Playlist, Provider, SearchResult, Track
 from music_player.core.plugin_manager import PluginContext
 
 logger = getLogger(__name__)
@@ -77,7 +78,6 @@ class TidalProvider(Provider):
         )
 
     async def _handle_second_login_step(self, future: concurrent.futures.Future[None]) -> bool:
-        """Handle the second login step."""
         await asyncio.wrap_future(future)
 
         if not self._tidal.check_login():
@@ -89,7 +89,6 @@ class TidalProvider(Provider):
         return True
 
     def _save_credentials(self) -> None:
-        """Save the credentials to the credential store."""
         self._context.set_credentials(
             _Credentials(
                 token_type=self._tidal.token_type,
@@ -99,14 +98,17 @@ class TidalProvider(Provider):
             )
         )
 
-    async def search(self, query: str) -> SearchResult:
-        """Search the provider's library."""
-        results = self._tidal.search(query)
-
+    async def _to_search_result(
+        self,
+        artists: list[tidalapi.Artist] | None = None,
+        albums: list[tidalapi.Album] | None = None,
+        playlists: list[tidalapi.Playlist] | None = None,
+        tracks: list[tidalapi.Track] | None = None,
+        **_: Any,
+    ) -> SearchResult:
         return SearchResult(
             artists=[
-                Artist(provider_id=self.id, id=str(x.id), name=x.name, cover_uri=x.image(750))
-                for x in results['artists']
+                Artist(provider_id=self.id, id=str(x.id), name=x.name, cover_uri=x.image(750)) for x in artists or []
             ],
             albums=[
                 Album(
@@ -116,13 +118,43 @@ class TidalProvider(Provider):
                     artist=x.artist.name,
                     artist_id=str(x.artist.id),
                     cover_uri=x.image(1280),
-                    duration=x.duration,
                     year=x.year,
+                    duration=x.duration,
                     number_of_tracks=x.num_tracks,
                 )
-                for x in results['albums']
+                for x in albums or []
+            ],
+            playlists=[
+                Playlist(
+                    provider_id=self.id,
+                    id=str(x.id),
+                    name=x.name,
+                    cover_uri=x.image(1080),
+                    duration=x.duration,
+                    number_of_tracks=x.num_tracks,
+                )
+                for x in playlists or []
+            ],
+            tracks=[
+                Track(
+                    provider_id=self.id,
+                    id=str(x.id),
+                    title=x.name,
+                    artist=x.artist.name,
+                    artist_id=str(x.artist.id),
+                    album=x.album.name,
+                    album_id=str(x.album.id),
+                    cover_uri=x.album.image(1280),
+                    duration=x.duration,
+                )
+                for x in tracks or []
             ],
         )
+
+    async def search(self, query: str) -> SearchResult:
+        """Search the provider's library."""
+        results = self._tidal.search(query)
+        return await self._to_search_result(**results)
 
     async def list(self, arg: PlayableContainer) -> SearchResult:
         """List the content in the provider's library."""

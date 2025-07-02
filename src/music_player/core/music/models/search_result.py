@@ -15,6 +15,6 @@ class SearchResult(BaseModel):
     artists: list[Artist] = Field(default_factory=list)
     albums: list[Album] = Field(default_factory=list)
     playlists: list[Playlist] = Field(default_factory=list)
-    songs: list[Track] = Field(default_factory=list)
+    tracks: list[Track] = Field(default_factory=list)
     podcasts: list[Track] = Field(default_factory=list)
     radios: list[Radio] = Field(default_factory=list)

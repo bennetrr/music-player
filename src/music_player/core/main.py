@@ -6,7 +6,7 @@ from collections.abc import Callable, Coroutine
 from typing import Any
 
 from rich import print  # noqa: A004
-from rich.table import Table
+from rich.table import Table, Column
 from textual_image.renderable import Image as CliImage
 
 from music_player.core.constants import CONFIG_DIR
@@ -46,26 +46,57 @@ async def search(query: str | None) -> None:
 
     res = await tidal.search(query)
 
-    table = Table('Image', 'Name', title='Artists')
+    table = Table('Image', 'Name', Column('ID', no_wrap=True), title='Artists')
     for artist in res.artists:
         img = (
             CliImage(urllib.request.urlretrieve(artist.cover_uri)[0], width='auto', height=4)
             if artist.cover_uri
             else None
         )
-        table.add_row(img, artist.name)
-
+        table.add_row(img, artist.name, artist.id)
     print(table)
 
-    table = Table('Image', 'Name', title='Albums')
+    table = Table('Image', 'Name', 'Year', 'Duration', 'Number of Tracks', Column('ID', no_wrap=True), title='Albums')
     for album in res.albums:
         img = (
             CliImage(urllib.request.urlretrieve(album.cover_uri)[0], width='auto', height=4)
             if album.cover_uri
             else None
         )
-        table.add_row(img, album.name)
+        table.add_row(
+            img,
+            album.name,
+            str(album.year),
+            f'{album.duration // 60}:{album.duration % 60:d}',
+            str(album.number_of_tracks),
+            album.id,
+        )
+    print(table)
 
+    table = Table('Image', 'Name', 'Duration', 'Number of Tracks', Column('ID', no_wrap=True), title='Playlists')
+    for playlist in res.playlists:
+        img = (
+            CliImage(urllib.request.urlretrieve(playlist.cover_uri)[0], width='auto', height=4)
+            if playlist.cover_uri
+            else None
+        )
+        table.add_row(
+            img,
+            playlist.name,
+            f'{playlist.duration // 60}:{playlist.duration % 60:d}',
+            str(playlist.number_of_tracks),
+            playlist.id,
+        )
+    print(table)
+
+    table = Table('Image', 'Name', Column('ID', no_wrap=True), title='Tracks')
+    for track in res.tracks:
+        img = (
+            CliImage(urllib.request.urlretrieve(track.cover_uri)[0], width='auto', height=4)
+            if track.cover_uri
+            else None
+        )
+        table.add_row(img, track.title, track.id)
     print(table)
 
 
