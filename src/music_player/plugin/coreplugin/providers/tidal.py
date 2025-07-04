@@ -187,10 +187,6 @@ class TidalProvider(Provider):
             case _:
                 raise ValueError(f'Invalid argument type: {type(arg)}')
 
-    async def resolve_uri(self, track: Playable) -> str:
-        """Resolve a track to a playable URI."""
-        return NotImplemented
-
-    async def get_metadata(self, track: Playable) -> Track:
-        """Get the metadata for a track."""
-        return NotImplemented
+    async def resolve_uri(self, playable: Playable) -> str:
+        """Resolve a playable object to a URI."""
+        raise NotImplementedError

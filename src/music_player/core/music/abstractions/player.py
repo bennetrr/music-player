@@ -15,7 +15,7 @@ class Player(BasePlugin, ABC):
     A player can be implemented in two ways:
 
     - As a local player that uses the device's speakers (or a bluetooth speaker connected to the device)
-    - As a remote player that forwards the track URIs to another device (e.g., a hifi system)
+    - As a remote player that forwards the playable URIs to another device (e.g., a hifi system)
     """
 
     _playback_status_change_event: EventManager[PlaybackStatus]
@@ -44,7 +44,7 @@ class Player(BasePlugin, ABC):
         Start or resume the playback.
 
         :raises QueueOutOfBoundsError: If the queue is empty.
-        :raises AlreadyPlayingError: If a track is already playing.
+        :raises AlreadyPlayingError: If ``status`` is ``PLAYING``.
         """
 
     @abstractmethod
@@ -52,7 +52,7 @@ class Player(BasePlugin, ABC):
         """
         Pause the playback.
 
-        :raises NotPlayingError: If no track is playing.
+        :raises NotPlayingError: If ``status`` is not ``PLAYING``.
         """
 
     @property
@@ -61,60 +61,60 @@ class Player(BasePlugin, ABC):
         """
         Returns the current playback status.
 
-        :return: Whether a track is currently playing.
+        :return: The current playback status.
         """
 
     # endregion
 
-    # region Current Track Control
+    # region Current Queue Item Control
     @abstractmethod
     def next(self) -> None:
         """
-        Jump to the next track in the queue.
+        Jump to the next item in the queue.
 
         This will also start playback if it was paused.
 
-        :raises QueueOutOfBoundsError: If there is no next track in the queue.
+        :raises QueueOutOfBoundsError: If there is no next item.
         """
 
     @property
     @abstractmethod
     def has_next(self) -> bool:
         """
-        Check if there is a next track in the queue.
+        Check if there is a next item in the queue.
 
-        :return: Whether there is a next track.
+        :return: Whether there is a next item.
         """
 
     @abstractmethod
     def previous(self) -> None:
         """
-        Jump to the previous track in the queue.
+        Jump to the previous item in the queue.
 
         This will also start playback if it was paused.
 
-        :raises QueueOutOfBoundsError: If there is no previous track in the queue.
+        :raises QueueOutOfBoundsError: If there is no previous item.
         """
 
     @property
     @abstractmethod
     def has_previous(self) -> bool:
         """
-        Check if there is a previous track in the queue.
+        Check if there is a previous item in the queue.
 
-        :return: Whether there is a previous track.
+        :return: Whether there is a previous item.
         """
 
     @property
     @abstractmethod
     def index(self) -> int:
-        """Get the index of the playing track."""
+        """Get the index of the playing item."""
 
     @index.setter
     @abstractmethod
     def index(self, value: int) -> None:
         """
-        Set the index of the playing track.
+        Set the index of the playing item.
 
         :raises QueueOutOfBoundsError: When the given index is not in the queue.
         """
@@ -123,7 +123,7 @@ class Player(BasePlugin, ABC):
     @abstractmethod
     def current(self) -> Track | None:
         """
-        Get the metadata of the currently playing track.
+        Get the currently playing track.
 
         :return: The currently playing track or ``None`` if no track is playing.
         """
@@ -134,60 +134,60 @@ class Player(BasePlugin, ABC):
     @property
     @abstractmethod
     def items(self) -> list[Playable]:
-        """Get the metadata of all queued tracks."""
+        """Get all queued items."""
 
     @abstractmethod
     def __len__(self) -> int:
         """
-        Get the number of tracks in the queue.
+        Get the number of items in the queue.
 
-        :return: The number of tracks in the queue.
+        :return: The number of items in the queue.
         """
 
     @abstractmethod
-    def add(self, track: Playable | list[Playable]) -> None:
+    def add(self, playable: Playable | list[Playable]) -> None:
         """
-        Add a track / list of tracks to the end of the queue.
+        Add an item / list of items to the end of the queue.
 
-        :param track: The track / list of tracks to add.
-        """
-
-    @abstractmethod
-    def add_after_current(self, track: Playable | list[Playable]) -> None:
-        """
-        Add a track / list of tracks to the queue right after the current track.
-
-        :param track: The track / list of tracks to add.
+        :param playable: The item(s) to add.
         """
 
     @abstractmethod
-    def remove(self, track: Playable) -> None:
+    def add_after_current(self, playable: Playable | list[Playable]) -> None:
         """
-        Remove a track from the queue.
+        Add an item / list of items to the queue after the current item.
 
-        :param track: The track to remove.
-        :raises QueueOutOfBoundsError: If the track is not in the queue.
+        :param playable: The item(s) to add.
         """
 
     @abstractmethod
-    def move(self, track: Playable, to: int) -> None:
+    def remove(self, playable: Playable) -> None:
         """
-        Move a track to a new index.
+        Remove an item from the queue.
 
-        :param track: The track to move.
-        :param to: The new index for the track.
-        :raises QueueOutOfBoundsError: If the track or the index are not in the queue.
+        :param playable: The item to remove.
+        :raises QueueOutOfBoundsError: If the given item is not in the queue.
+        """
+
+    @abstractmethod
+    def move(self, playable: Playable, to: int) -> None:
+        """
+        Move an item to a new index.
+
+        :param playable: The item to move.
+        :param to: The new index for the item.
+        :raises QueueOutOfBoundsError: If the item or the index are not in the queue.
         """
 
     @abstractmethod
     def clear(self) -> None:
-        """Remove all tracks from the queue."""
+        """Remove all items from the queue."""
 
     @property
     @abstractmethod
     def shuffle(self) -> bool:
         """
-        Check if the queue is shuffled.
+        Return whether the queue is shuffled.
 
         :return: Whether the queue is shuffled.
         """
@@ -205,18 +205,18 @@ class Player(BasePlugin, ABC):
     @abstractmethod
     def repeat(self) -> RepeatMode:
         """
-        Check if the queue is set to repeat.
+        Return the active repeat mode.
 
-        :return: Whether the queue is set to repeat.
+        :return: The repeat mode.
         """
 
     @repeat.setter
     @abstractmethod
     def repeat(self, value: RepeatMode) -> None:
         """
-        Set the repeat mode for the queue.
+        Set the repeat mode.
 
-        :param value: The new repeat mode. Can be 'off', 'one', or 'all'.
+        :param value: The repeat mode.
         """
 
     # endregion
@@ -229,7 +229,7 @@ class Player(BasePlugin, ABC):
         Get the current playback position.
 
         :return: The current playback position in seconds or ``None``
-                 if the track is continuous (e.g., a radio station).
+                 if the currently playing item is e.g., a radio.
         """
 
     @position.setter

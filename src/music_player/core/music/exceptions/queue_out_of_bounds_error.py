@@ -2,4 +2,4 @@ __all__ = ['QueueOutOfBoundsError']
 
 
 class QueueOutOfBoundsError(IndexError):
-    """Raised when trying to access a track or queue index that is not in the queue."""
+    """Raised when trying to access a queue item or index that is not in the queue."""
