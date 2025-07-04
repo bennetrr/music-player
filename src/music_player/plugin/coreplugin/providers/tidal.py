@@ -111,7 +111,7 @@ class TidalProvider(Provider):
             case Track():
                 return self._tidal.track(arg.id)
             case _:
-                raise ValueError(f'Invalid argument type: {type(arg)}')
+                raise TypeError(f'Invalid argument type: {type(arg)}')
 
     async def _to_search_result(
         self,
@@ -119,7 +119,7 @@ class TidalProvider(Provider):
         albums: list[tidalapi.Album] | None = None,
         playlists: list[tidalapi.Playlist] | None = None,
         tracks: list[tidalapi.Track] | None = None,
-        **_: Any,
+        **_: Any,  # noqa: ANN401
     ) -> SearchResult:
         return SearchResult(
             artists=[
@@ -185,7 +185,7 @@ class TidalProvider(Provider):
             case tidalapi.Playlist():
                 return await self._to_search_result(tracks=obj.tracks())
             case _:
-                raise ValueError(f'Invalid argument type: {type(arg)}')
+                raise TypeError(f'Invalid argument type: {type(arg)}')
 
     async def resolve_uri(self, playable: Playable) -> str:
         """Resolve a playable object to a URI."""
